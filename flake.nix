@@ -47,6 +47,7 @@
           GORACE = "abort_on_error=1 halt_on_error=1";
 
           shellHook = ''
+            pre-commit install --install-hooks -t pre-commit -t commit-msg
             export GOBIN=$(pwd)/dist/tools
             export CGO_ENABLED=1
             export PATH="$GOBIN:$PATH"

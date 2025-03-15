@@ -1,0 +1,50 @@
+default_language_version:
+  node: default
+exclude: '(\.golden|package-lock\.json|/abis/.*\.json|^schema/.*\.graphql|\.plutus|\.hash|\.address|\.svg)$'
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      - id: check-added-large-files
+        stages: [commit]
+      - id: check-merge-conflict
+        stages: [commit]
+      - id: check-symlinks
+        stages: [commit]
+      - id: destroyed-symlinks
+        stages: [commit]
+      - id: check-case-conflict
+        stages: [commit]
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: detect-private-key
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: v0.19.1
+    hooks:
+      - id: gitlint
+  - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
+    rev: 2.7.2
+    hooks:
+      - id: editorconfig-checker
+        stages: [commit]
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.26.3
+    hooks:
+      - id: check-github-actions
+        stages: [commit]
+      - id: check-github-workflows
+        stages: [commit]
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.9.0.5
+    hooks:
+      - id: shellcheck
+        stages: [commit]
+  - repo: https://github.com/dnephin/pre-commit-golang
+    rev: v0.5.1
+    hooks:
+      - id: go-generate
+      - id: golangci-lint
+      - id: go-mod-tidy
