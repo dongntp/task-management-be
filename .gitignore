@@ -3,3 +3,4 @@
 .env
 dist
 **/generated/
+**/query-gen-code/
