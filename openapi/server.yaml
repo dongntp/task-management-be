@@ -1,0 +1,6 @@
+package: server
+output: internal/generated/openapi/server/openapi_server.go
+generate:
+  models: true
+  echo-server: true
+  strict-server: true

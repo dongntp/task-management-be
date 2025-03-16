@@ -1,0 +1,7 @@
+package: client
+output: internal/generated/openapi/client/openapi_client.go
+additional-imports:
+  - package: task-management-be/internal/generated/openapi/models
+    alias: .
+generate:
+  client: true

@@ -1,0 +1,50 @@
+openapi: "3.0.0"
+info:
+  title: Swagger
+  version: v1
+servers:
+  - url: "{API_HOST}/{BASE_PATH}"
+    variables:
+      API_HOST:
+        default: http://localhost:3000
+      BASE_PATH:
+        default: v1
+tags:
+  - name: Healthcheck
+    description: Healthcheck
+
+paths:
+  /:
+    get:
+      summary: Healthcheck
+      operationId: healthcheck
+      tags:
+        - Healthcheck
+      responses:
+        "200":
+          description: Return OK
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+components:
+  responses:
+    ClientError:
+      description: Client error
+      content:
+        application/json:
+          schema:
+            type: string
+            example: Client error message
+    ServerError:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            type: string
+            example: Server error message

@@ -1,0 +1,93 @@
+run:
+  timeout: 3m
+  tests: false
+  modules-download-mode: readonly
+linters-settings:
+  cyclop:
+    max-complexity: 15
+  dupl:
+    threshold: 200
+  exhaustive:
+    default-signifies-exhaustive: true
+  funlen:
+    lines: 120
+    statements: 50
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+  gocritic:
+    enable-all: true
+    disabled-checks:
+      - ifElseChain
+  gocyclo:
+    min-complexity: 15
+  lll:
+    line-length: 200
+  skip-files:
+      - "internal/generated/openapi/server/openapi_server.go"
+
+linters:
+  enable:
+    - dogsled
+    - dupl
+    - goconst
+    - goprintffuncname
+    - gosimple
+    - lll
+    - mnd
+    - nakedret
+    - nolintlint
+    - stylecheck
+    - unconvert
+    - whitespace
+  disable:
+    # Problematic
+    - gosec # Infinite loop error
+
+    # Not appropriate
+    - depguard
+    - godox
+
+    # Low hanging fruit
+    - contextcheck # bugs
+    - errorlint # bugs
+    - nilerr # bugs
+    - perfsprint # performance
+    - prealloc # performance
+    - godot # comment
+    - exhaustruct # test
+    - gci # format - import
+    - gofumpt # format - import
+
+    # Hard to enable
+    - err113 # error
+    - wrapcheck # error
+
+  presets:
+    - bugs
+    - comment
+    - complexity
+    - error
+    - format
+    - import
+    - metalinter
+    # - module # Not appropriate
+    - performance
+    - sql
+    # - style # Too many things
+    - test
+    - unused
+
+# Excluding configuration per-path, per-linter, per-text and per-source
+issues:
+  exclude-rules:
+    # https://github.com/go-critic/go-critic/issues/926
+    - linters:
+        - gocritic
+      text: "unnecessaryDefer:"
+    - linters:
+        - gocritic
+      text: "unnamedResult:"
+    - linters:
+        - gocritic
+      text: "hugeParam:"

@@ -1,2 +1,5 @@
 .direnv
 .vscode
+.env
+dist
+**/generated/
