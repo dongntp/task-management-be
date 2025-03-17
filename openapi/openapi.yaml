@@ -14,7 +14,7 @@ tags:
     description: Healthcheck
 
 paths:
-  /:
+  /healthcheck:
     get:
       summary: Healthcheck
       operationId: healthcheck
