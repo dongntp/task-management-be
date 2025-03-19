@@ -3,12 +3,12 @@ package middleware
 import (
 	"context"
 	"slices"
+	"strings"
 
 	"task-management-be/internal/generated/sql"
 	"task-management-be/internal/pkg/db"
 	"task-management-be/internal/pkg/env"
 
-	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -17,25 +17,21 @@ type AuthContextKeyType string
 
 const usernameContextKey AuthContextKeyType = "username"
 
-func adminAuthConfig(config env.Config) echo.MiddlewareFunc {
+func defaultBasicAuthConfig(config env.Config, dbClient *db.Client) echo.MiddlewareFunc {
 	return middleware.BasicAuthWithConfig(middleware.BasicAuthConfig{
-		Validator: func(_, password string, c echo.Context) (bool, error) {
+		Skipper: func(c echo.Context) bool {
+			return c.Request().URL.Path == "/" || strings.Contains(c.Request().URL.Path, "healthcheck")
+		},
+		Validator: func(username, password string, c echo.Context) (bool, error) {
 			if password == string(config.AdminAccessToken) {
 				setAuth(c, "admin")
 				return true, nil
 			}
-			return false, nil
-		},
-	})
-}
 
-func defaultBasicAuthConfig(config env.Config, dbClient *db.Client, paths *openapi3.Paths) echo.MiddlewareFunc {
-	return middleware.BasicAuthWithConfig(middleware.BasicAuthConfig{
-		Validator: func(username, password string, c echo.Context) (bool, error) {
-			reqPath := c.Request().URL.Path
+			reqPath, _ := strings.CutPrefix(c.Request().URL.Path, "/"+config.BasePath)
 			reqMethod := c.Request().Method
 
-			path := paths.Find(reqPath)
+			path := config.OpenAPIPaths.Find(reqPath)
 			tags := path.Operations()[reqMethod].Tags
 
 			params := sql.GetRoleByUserParams{

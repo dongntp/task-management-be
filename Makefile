@@ -11,7 +11,7 @@ tools-atlas:
 	chmod +x ./dist/tools/atlas
 
 gen-query:
-	rm -f internal/pkg/query-gen-code/*.go
+	rm -f internal/generated/sql/*.go
 	sqlc generate
 
 validate-schema:

@@ -1,13 +1,13 @@
 package env
 
 import (
-	"crypto/ecdsa"
 	"os"
 	"task-management-be/internal/pkg/logger"
 	"task-management-be/internal/pkg/sensitive"
 	"time"
 
 	"github.com/caarlos0/env/v9"
+	"github.com/getkin/kin-openapi/openapi3"
 	"go.uber.org/zap"
 	"gopkg.in/yaml.v2"
 )
@@ -32,7 +32,7 @@ type Environment struct {
 type Config struct {
 	Environment
 	HTTPLimit
-	RewardsSetterPrivateKey *ecdsa.PrivateKey
+	OpenAPIPaths *openapi3.Paths
 }
 
 const prefix = "0x"
@@ -55,6 +55,22 @@ func GetConfig() (cfg Config) {
 	if err = yaml.NewDecoder(configFile).Decode(&cfg.HTTPLimit); err != nil {
 		logger.Logger.Fatal("unable to decode config file", zap.Error(err))
 	}
+	cfg.OpenAPIPaths = loadPathsFromDocs(cfg.Environment.OpenAPIFilePath)
 
 	return cfg
+}
+
+func loadPathsFromDocs(openAPIFile string) *openapi3.Paths {
+	data, err := os.ReadFile(openAPIFile) // Change to "openapi.json" if needed
+	if err != nil {
+		logger.Logger.Fatal("Failed to read OpenAPI spec", zap.Error(err))
+	}
+
+	// Parse the OpenAPI spec
+	loader := openapi3.NewLoader()
+	doc, err := loader.LoadFromData(data)
+	if err != nil {
+		logger.Logger.Fatal("Failed to parse OpenAPI spec", zap.Error(err))
+	}
+	return doc.Paths
 }

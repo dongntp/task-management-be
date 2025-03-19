@@ -8,6 +8,9 @@ import (
 
 	"task-management-be/internal/api"
 	"task-management-be/internal/generated/openapi/server"
+	"task-management-be/internal/pkg/env"
+	"task-management-be/internal/pkg/logger"
+	"task-management-be/internal/pkg/middleware"
 )
 
 const BasePath = "v1" // TODO: Move to config
@@ -15,8 +18,12 @@ const BasePath = "v1" // TODO: Move to config
 func main() {
 	ctx := context.Background()
 
-	taskAPI := api.NewAPI(ctx)
+	loadedConfig := env.GetConfig()
+
+	taskAPI := api.NewAPI(ctx, loadedConfig)
 	serverEcho := echo.New()
+
+	middleware.SetUp(serverEcho, logger.Logger, loadedConfig, taskAPI.DBClient)
 
 	handler := server.NewStrictHandler(taskAPI, nil)
 	server.RegisterHandlersWithBaseURL(serverEcho, handler, BasePath)

@@ -41,12 +41,85 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
 
+  /admin/createAccount:
+    post:
+      summary: Create new account
+      operationId: createAccount
+      tags:
+        - Admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAccountRequest"
+      responses:
+        "200":
+          description: Return true if success
+          content:
+            application/json:
+              schema:
+                type: boolean
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  # /createTask:
+  #   post:
+  #     summary: Create new task
+  #     operationId: createAccount
+  #     tags:
+  #       - Employer
+  #     requestBody:
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             type: array
+  #             items:
+  #               $ref: "#/components/schemas/CreateAccountRequest"
+  #     responses:
+  #       "200":
+  #         description: list of new accounts
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: integer
+  #               format: int64
+  #       "400":
+  #         $ref: "#/components/responses/ClientError"
+  #       "500":
+  #         $ref: "#/components/responses/ServerError"
+
 components:
   securitySchemes:
     basicAuth:
       type: http
       scheme: basic
       description: Use `user` / `passwd` as the test credentials
+
+  schemas:
+    CreateAccountRequest:
+      type: object
+      required:
+        - username
+        - password
+        - role
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        role:
+          $ref: "#/components/schemas/Role"
+
+    Role:
+      type: string
+      enum:
+        - Employee
+        - Employer
+
   responses:
     ClientError:
       description: Client error

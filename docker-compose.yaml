@@ -35,7 +35,10 @@ services:
       - "3000:3000"
     environment:
       DB_CONNECTION_STRING: postgres://task:password@postgres:5432/task
-      CONFIG_FILE: /config/$ENV/tracking-api.yaml
+      CONFIG_FILE: /config/$ENV/api.yaml
+      OPEN_API_FILE_PATH: /openapi/openapi.yaml
+    env_file:
+      - ./secrets/$ENV.env
     depends_on:
       task-management-migration-db:
         condition: service_completed_successfully
