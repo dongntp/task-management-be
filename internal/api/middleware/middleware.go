@@ -4,6 +4,7 @@ import (
 	"task-management-be/internal/pkg/db"
 	"task-management-be/internal/pkg/env"
 
+	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"go.uber.org/zap"
@@ -12,7 +13,7 @@ import (
 const bodyLimit string = "5M"
 
 // SetUp sets up middleware for API.
-func SetUp(server *echo.Echo, parentLogger *zap.Logger, config env.Config, dbClient *db.Client) {
+func SetUp(server *echo.Echo, parentLogger *zap.Logger, config env.Config, dbClient *db.Client, paths *openapi3.Paths) {
 	var (
 		timeoutConfig = middleware.TimeoutConfig{Timeout: config.Timeout}
 	)
@@ -32,5 +33,5 @@ func SetUp(server *echo.Echo, parentLogger *zap.Logger, config env.Config, dbCli
 	server.Use(middleware.Gzip())
 	server.Use(middleware.Recover())
 	server.Use(LogWithRequestID(parentLogger)...)
-	server.Use(defaultBasicAuthConfig(config))
+	server.Use(defaultBasicAuthConfig(config, dbClient, paths))
 }

@@ -20,11 +20,13 @@ type HTTPLimit struct {
 }
 
 type Environment struct {
-	APIPort    int    `env:"API_PORT"                   envDefault:"3000"`
-	BasePath   string `env:"BASE_PATH"                  envDefault:"v1"`
-	ConfigFile string `env:"CONFIG_FILE"`
+	APIPort         int    `env:"API_PORT"                   envDefault:"3000"`
+	BasePath        string `env:"BASE_PATH"                  envDefault:"v1"`
+	ConfigFile      string `env:"CONFIG_FILE"`
+	OpenAPIFilePath string `env:"OPEN_API_FILE_PATH"`
 	// DB connection string
 	DBConnectionString sensitive.Sensitive `env:"DB_CONNECTION_STRING"`
+	AdminAccessToken   sensitive.Sensitive `env:"ADMIN_ACCESS_TOKEN"`
 }
 
 type Config struct {

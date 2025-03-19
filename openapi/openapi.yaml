@@ -10,8 +10,17 @@ servers:
       BASE_PATH:
         default: v1
 tags:
-  - name: Healthcheck
+  - name: healthcheck
     description: Healthcheck
+  - name: Admin
+    description: APIs for admin actions
+  - name: Employer
+    description: APIs for employer actions
+  - name: Employee
+    description: APIs for employee actions
+
+security:
+  - basicAuth: []
 
 paths:
   /healthcheck:
@@ -33,6 +42,11 @@ paths:
           $ref: "#/components/responses/ServerError"
 
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: Use `user` / `passwd` as the test credentials
   responses:
     ClientError:
       description: Client error
