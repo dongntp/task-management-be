@@ -65,32 +65,77 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
 
-  # /createTask:
-  #   post:
-  #     summary: Create new task
-  #     operationId: createAccount
-  #     tags:
-  #       - Employer
-  #     requestBody:
-  #       required: true
-  #       content:
-  #         application/json:
-  #           schema:
-  #             type: array
-  #             items:
-  #               $ref: "#/components/schemas/CreateAccountRequest"
-  #     responses:
-  #       "200":
-  #         description: list of new accounts
-  #         content:
-  #           application/json:
-  #             schema:
-  #               type: integer
-  #               format: int64
-  #       "400":
-  #         $ref: "#/components/responses/ClientError"
-  #       "500":
-  #         $ref: "#/components/responses/ServerError"
+  /admin/updateAccount:
+    post:
+      summary: Activate, deactivate or update accounts. `username` is required. All other fields should be excluded unless modified.
+      operationId: updateAccount
+      tags:
+        - Admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAccountRequest"
+      responses:
+        "200":
+          description: Return true if success
+          content:
+            application/json:
+              schema:
+                type: boolean
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /createTask:
+    post:
+      summary: Create new task
+      operationId: createTask
+      tags:
+        - Employer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTaskRequest"
+      responses:
+        "200":
+          description: Return task id
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /assignTask:
+    post:
+      summary: Assign task
+      operationId: assignTask
+      tags:
+        - Employer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssignTaskRequest"
+      responses:
+        "200":
+          description: Return true if success
+          content:
+            application/json:
+              schema:
+                type: boolean
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "500":
+          $ref: "#/components/responses/ServerError"
 
 components:
   securitySchemes:
@@ -119,6 +164,51 @@ components:
       enum:
         - Employee
         - Employer
+
+    UpdateAccountRequest:
+      type: object
+      required:
+        - username
+      properties:
+        username:
+          type: string
+        active:
+          type: boolean
+        newUsername:
+          type: string
+        newPassword:
+          type: string
+        newRole:
+          $ref: "#/components/schemas/Role"
+
+    CreateTaskRequest:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+
+    AssignTaskRequest:
+      type: object
+      required:
+        - taskID
+        - username
+      properties:
+        taskID:
+          type: string
+        username:
+          type: string
+
+    Status:
+      type: string
+      enum:
+        - Pending
+        - InProgress
+        - Complete
 
   responses:
     ClientError:

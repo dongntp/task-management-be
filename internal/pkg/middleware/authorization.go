@@ -2,12 +2,12 @@ package middleware
 
 import (
 	"context"
-	"slices"
 	"strings"
 
 	"task-management-be/internal/generated/sql"
 	"task-management-be/internal/pkg/db"
 	"task-management-be/internal/pkg/env"
+	"task-management-be/internal/pkg/hash"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -28,22 +28,17 @@ func defaultBasicAuthConfig(config env.Config, dbClient *db.Client) echo.Middlew
 				return true, nil
 			}
 
-			reqPath, _ := strings.CutPrefix(c.Request().URL.Path, "/"+config.BasePath)
-			reqMethod := c.Request().Method
-
-			path := config.OpenAPIPaths.Find(reqPath)
-			tags := path.Operations()[reqMethod].Tags
-
-			params := sql.GetRoleByUserParams{
-				Username: username,
-				Password: password,
-			}
-			role, err := dbClient.GetRoleByUser(c.Request().Context(), params)
+			user, err := dbClient.GetUserByUserName(c.Request().Context(), username)
 			if err != nil {
 				return false, nil
 			}
 
-			if slices.Contains(tags, string(role)) {
+			role := sql.RoleEnumEmployee
+			if strings.Contains(c.Request().URL.Path, "employer") {
+				role = sql.RoleEnumEmployer
+			}
+
+			if user.Active && user.Role == role && hash.CheckPasswordHash(password, user.Password) {
 				setAuth(c, username)
 				return true, nil
 			}

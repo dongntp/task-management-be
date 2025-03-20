@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS account (
   username TEXT NOT NULL PRIMARY KEY,
   password TEXT NOT NULL,
   role role_enum NOT NULL,
+  active BOOLEAN NOT NULL DEFAULT true,
 
   last_updated TIMESTAMP NOT NULL DEFAULT NOW()
 );
