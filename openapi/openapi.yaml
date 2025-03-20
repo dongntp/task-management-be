@@ -11,13 +11,13 @@ servers:
         default: v1
 tags:
   - name: healthcheck
-    description: Healthcheck
+    description: Healthcheck. No need to log in.
   - name: Admin
-    description: APIs for admin actions
+    description: APIs for administrative actions. Authenticate using `admin` as the username and `ADMIN_ACCESS_TOKEN` as the password.
   - name: Employer
-    description: APIs for employer actions
+    description: APIs for employer actions, authorized through the employer account.
   - name: Employee
-    description: APIs for employee actions
+    description: APIs for employee actions, authorized through the employee account.
 
 security:
   - basicAuth: []
@@ -28,7 +28,7 @@ paths:
       summary: Healthcheck
       operationId: healthcheck
       tags:
-        - Healthcheck
+        - healthcheck
       responses:
         "200":
           description: Return OK
@@ -43,7 +43,7 @@ paths:
 
   /admin/createAccount:
     post:
-      summary: Create new account
+      summary: Create a new account. The `role` field must be either `Employee` or `Employer` value.
       operationId: createAccount
       tags:
         - Admin
@@ -115,7 +115,7 @@ paths:
           $ref: "#/components/responses/ServerError"
 
     post:
-      summary: Create new task
+      summary: Create a new task.
       operationId: createTask
       tags:
         - Employer
@@ -138,7 +138,7 @@ paths:
           $ref: "#/components/responses/ServerError"
 
     put:
-      summary: Assign task
+      summary: Assign a task to an employee.
       operationId: assignTask
       tags:
         - Employer
@@ -162,13 +162,13 @@ paths:
 
   /employer/employee/summary:
     get:
-      summary: Get employee summary
+      summary: Get employee summary.
       operationId: getEmployeeSummary
       tags:
         - Employer
       responses:
         "200":
-          description: Return employee list
+          description: Return employee list.
           content:
             application/json:
               schema:
@@ -182,7 +182,7 @@ paths:
 
   /employee/task:
     get:
-      summary: Get tasks by employee.
+      summary: Get tasks assigned to logged-in employee.
       operationId: getTasksByEmployee
       tags:
         - Employee
@@ -201,7 +201,7 @@ paths:
           $ref: "#/components/responses/ServerError"
 
     put:
-      summary: Update task status
+      summary: Employees update their task's status. The `status` field must be `Pending`, `InProgress` or `Completed`.
       operationId: updateTaskStatus
       tags:
         - Employee
