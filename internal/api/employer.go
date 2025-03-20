@@ -105,6 +105,24 @@ func (a *API) GetTasksByEmployer(ctx context.Context, request server.GetTasksByE
 	return server.GetTasksByEmployer200JSONResponse(res), nil
 }
 
+func (a *API) GetEmployeeSummary(ctx context.Context, request server.GetEmployeeSummaryRequestObject) (server.GetEmployeeSummaryResponseObject, error) {
+	employees, err := a.DBClient.GetEmployeeSummary(ctx)
+	if err != nil {
+		return server.GetEmployeeSummary500JSONResponse{ServerErrorJSONResponse: server.ServerErrorJSONResponse("Internal server error")}, nil
+	}
+
+	res := []server.EmployeeSummary{}
+	for _, e := range employees {
+		res = append(res, server.EmployeeSummary{
+			Employee:       e.Username,
+			TotalTasks:     e.TotalTasks,
+			TotalCompleted: e.TotalCompleted,
+		})
+	}
+
+	return server.GetEmployeeSummary200JSONResponse(res), nil
+}
+
 func generateUUID() string {
 	id := uuid.New()
 	return id.String()

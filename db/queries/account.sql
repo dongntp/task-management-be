@@ -16,3 +16,15 @@ SET
   active = @newActive,
   role = @newRole
 WHERE username = @username;
+
+-- name: GetEmployeeSummary :many
+SELECT account.username, t.total_tasks, t.total_completed
+FROM account
+LEFT JOIN (
+  SELECT assignee, COUNT(*) AS total_tasks, COUNT(
+    CASE WHEN status = 'Completed' THEN 1 ELSE NULL END
+  ) as total_completed
+  FROM task
+  GROUP BY assignee
+) AS t ON t.assignee = account.username
+WHERE role = 'Employee';

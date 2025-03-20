@@ -160,6 +160,26 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
 
+  /employer/employee/summary:
+    get:
+      summary: Get employee summary
+      operationId: getEmployeeSummary
+      tags:
+        - Employer
+      responses:
+        "200":
+          description: Return employee list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EmployeeSummary"
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
   /employee/task:
     get:
       summary: Get tasks by employee
@@ -322,6 +342,22 @@ components:
       enum:
         - ASC
         - DESC
+
+    EmployeeSummary:
+      type: object
+      required:
+        - employee
+        - totalTasks
+        - totalCompleted
+      properties:
+        employee:
+          type: string
+        totalTasks:
+          type: integer
+          format: int64
+        totalCompleted:
+          type: integer
+          format: int64
 
   parameters:
     assignee:
