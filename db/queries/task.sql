@@ -7,6 +7,9 @@ UPDATE task
 SET assignee = @username
 WHERE id = @id;
 
+-- name: CheckValidTask :one
+SELECT EXISTS(SELECT 1 FROM task WHERE id = @id AND assignee = @username);
+
 -- name: UpdateTaskStatus :exec
 UPDATE task
 SET status = @status

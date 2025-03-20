@@ -91,7 +91,7 @@ paths:
 
   /employer/task:
     get:
-      summary: Get tasks by employer
+      summary: Retrieve tasks by employer. If no parameters are specified, all tasks will be returned. Only one parameter is accepted at a time. If multiple parameters are provided, only the first one will be considered in the following order [assignee, status, orderBy].
       operationId: getTasksByEmployer
       tags:
         - Employer
@@ -182,7 +182,7 @@ paths:
 
   /employee/task:
     get:
-      summary: Get tasks by employee
+      summary: Get tasks by employee.
       operationId: getTasksByEmployee
       tags:
         - Employee
