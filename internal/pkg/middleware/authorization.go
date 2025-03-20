@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"task-management-be/internal/generated/sql"
@@ -33,9 +34,9 @@ func defaultBasicAuthConfig(config env.Config, dbClient *db.Client) echo.Middlew
 				return false, nil
 			}
 
-			role := sql.RoleEnumEmployee
+			role := sql.RoleEmployee
 			if strings.Contains(c.Request().URL.Path, "employer") {
-				role = sql.RoleEnumEmployer
+				role = sql.RoleEmployer
 			}
 
 			if user.Active && user.Role == role && hash.CheckPasswordHash(password, user.Password) {
@@ -56,11 +57,11 @@ func setAuth(c echo.Context, username string) {
 	c.SetRequest(req.WithContext(reqCtxWithUsername))
 }
 
-func GetUserName(ctx context.Context) *string {
+func GetUserName(ctx context.Context) (string, error) {
 	username := ctx.Value(usernameContextKey)
 	if username == nil {
-		return nil
+		return "", fmt.Errorf("don't have username")
 	}
 	rs := username.(string)
-	return &rs
+	return rs, nil
 }

@@ -10,7 +10,7 @@ services:
       POSTGRES_DB: task
       POSTGRES_INITDB_ARGS: "-E UTF8 --locale=C"
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - ./compose/postgres:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 1s
@@ -47,6 +47,3 @@ services:
     image: task-management-api-docs:latest
     ports:
       - "3001:3001"
-
-volumes:
-  postgres:

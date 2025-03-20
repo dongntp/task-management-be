@@ -1,18 +1,18 @@
-CREATE TYPE role_enum AS ENUM (
+CREATE TYPE role AS ENUM (
   'Employee',
   'Employer'
 );
 
-CREATE TYPE status_enum AS ENUM (
+CREATE TYPE status AS ENUM (
   'Pending',
   'InProgress',
-  'Complete'
+  'Completed'
 );
 
 CREATE TABLE IF NOT EXISTS account (
   username TEXT NOT NULL PRIMARY KEY,
   password TEXT NOT NULL,
-  role role_enum NOT NULL,
+  role role NOT NULL,
   active BOOLEAN NOT NULL DEFAULT true,
 
   last_updated TIMESTAMP NOT NULL DEFAULT NOW()
@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS task (
   title TEXT NOT NULL,
   assignee TEXT,
   description TEXT,
-  status status_enum NOT NULL DEFAULT 'Pending',
+  status status NOT NULL DEFAULT 'Pending',
 
-  last_updated TIMESTAMP NOT NULL DEFAULT NOW(),
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   CONSTRAINT task_account_fk FOREIGN KEY (assignee) REFERENCES account (username) ON DELETE SET NULL
 );

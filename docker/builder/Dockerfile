@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.4
 FROM schema as schema
 
-FROM golang:1.22.9 AS builder
+FROM golang:1.23.0 AS builder
 
 ARG GO_RACE_DETECTOR
 
@@ -27,6 +27,6 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/build \
     make go
 
-FROM golang:1.22.9 AS runner
+FROM golang:1.23.0 AS runner
 
 WORKDIR /

@@ -89,7 +89,31 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
 
-  /createTask:
+  /employer/task:
+    get:
+      summary: Get tasks by employer
+      operationId: getTasksByEmployer
+      tags:
+        - Employer
+      parameters:
+        - $ref: "#/components/parameters/assignee"
+        - $ref: "#/components/parameters/status"
+        - $ref: "#/components/parameters/orderBy"
+        - $ref: "#/components/parameters/orderDirection"
+      responses:
+        "200":
+          description: Return tasks list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
     post:
       summary: Create new task
       operationId: createTask
@@ -113,8 +137,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
 
-  /assignTask:
-    post:
+    put:
       summary: Assign task
       operationId: assignTask
       tags:
@@ -125,6 +148,49 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/AssignTaskRequest"
+      responses:
+        "200":
+          description: Return true if success
+          content:
+            application/json:
+              schema:
+                type: boolean
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /employee/task:
+    get:
+      summary: Get tasks by employee
+      operationId: getTasksByEmployee
+      tags:
+        - Employee
+      responses:
+        "200":
+          description: Return tasks list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+        "400":
+          $ref: "#/components/responses/ClientError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+    put:
+      summary: Update task status
+      operationId: updateTaskStatus
+      tags:
+        - Employee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTaskStatusRequest"
       responses:
         "200":
           description: Return true if success
@@ -186,6 +252,7 @@ components:
       required:
         - title
         - description
+        - dueDate
       properties:
         title:
           type: string
@@ -203,12 +270,87 @@ components:
         username:
           type: string
 
+    UpdateTaskStatusRequest:
+      type: object
+      required:
+        - taskID
+        - status
+      properties:
+        taskID:
+          type: string
+        status:
+          $ref: "#/components/schemas/Status"
+
     Status:
       type: string
       enum:
         - Pending
         - InProgress
-        - Complete
+        - Completed
+
+    Task:
+      type: object
+      required:
+        - id
+        - title
+        - description
+        - status
+        - creationDate
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        assignee:
+          type: string
+        status:
+          $ref: "#/components/schemas/Status"
+        creationDate:
+          type: string
+          format: date-time
+
+    OrderBy:
+      type: string
+      enum:
+        - CreationDate
+        - Status
+
+    OrderDirection:
+      type: string
+      enum:
+        - ASC
+        - DESC
+
+  parameters:
+    assignee:
+      name: assignee
+      in: query
+      description: Filter tasks by assignee
+      schema:
+        type: string
+
+    status:
+      name: status
+      in: query
+      description: Filter tasks by status
+      schema:
+        $ref: "#/components/schemas/Status"
+
+    orderBy:
+      name: orderBy
+      in: query
+      description: Choose the order field
+      schema:
+        $ref: "#/components/schemas/OrderBy"
+
+    orderDirection:
+      name: orderDirection
+      in: query
+      description: Choose the order direction
+      schema:
+        $ref: "#/components/schemas/OrderDirection"
 
   responses:
     ClientError:

@@ -20,7 +20,7 @@ func (a *API) CreateAccount(ctx context.Context, request server.CreateAccountReq
 	param := sql.InsertNewAccountParams{
 		Username: newAcc.Username,
 		Password: password,
-		Role:     sql.RoleEnum(newAcc.Role),
+		Role:     sql.Role(newAcc.Role),
 	}
 
 	err = a.DBClient.InsertNewAccount(ctx, param)
@@ -52,7 +52,7 @@ func (a *API) UpdateAccount(ctx context.Context, request server.UpdateAccountReq
 		Newusername: PointerValueWithDefault(reqBody.NewUsername, reqBody.Username),
 		Newpassword: password,
 		Newactive:   PointerValueWithDefault(reqBody.Active, curAccount.Active),
-		Newrole:     sql.RoleEnum(PointerValueWithDefault(reqBody.NewRole, server.Role(curAccount.Role))),
+		Newrole:     sql.Role(PointerValueWithDefault(reqBody.NewRole, server.Role(curAccount.Role))),
 	}
 
 	err = a.DBClient.UpdateAccountByAdmin(ctx, params)
