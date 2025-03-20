@@ -28,3 +28,5 @@ CREATE TABLE IF NOT EXISTS task (
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   CONSTRAINT task_account_fk FOREIGN KEY (assignee) REFERENCES account (username) ON DELETE SET NULL
 );
+
+CREATE INDEX IF NOT EXISTS idx_task_creation_date ON task (created_at);

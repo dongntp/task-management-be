@@ -73,9 +73,17 @@ func (a *API) GetTasksByEmployer(ctx context.Context, request server.GetTasksByE
 			return server.GetTasksByEmployer400JSONResponse{ClientErrorJSONResponse: server.ClientErrorJSONResponse("`orderDirection` must be specified with `orderBy`")}, nil
 		}
 		if *params.OrderBy == server.OrderByCreationDate {
-			tasks, err = a.DBClient.GetSortedTasksById(ctx, *params.OrderDirection)
+			if *params.OrderDirection == server.ASC {
+				tasks, err = a.DBClient.GetSortedTasksByTimeAsc(ctx)
+			} else {
+				tasks, err = a.DBClient.GetSortedTasksByTimeDesc(ctx)
+			}
 		} else {
-			tasks, err = a.DBClient.GetSortedTasksByStatus(ctx, *params.OrderDirection)
+			if *params.OrderDirection == server.ASC {
+				tasks, err = a.DBClient.GetSortedTasksByStatusAsc(ctx)
+			} else {
+				tasks, err = a.DBClient.GetSortedTasksByStatusDesc(ctx)
+			}
 		}
 	default:
 		tasks, err = a.DBClient.GetAllTasks(ctx)

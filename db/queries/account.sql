@@ -18,7 +18,7 @@ SET
 WHERE username = @username;
 
 -- name: GetEmployeeSummary :many
-SELECT account.username, t.total_tasks, t.total_completed
+SELECT account.username, coalesce(t.total_tasks, 0), coalesce(t.total_completed, 0)
 FROM account
 LEFT JOIN (
   SELECT assignee, COUNT(*) AS total_tasks, COUNT(
